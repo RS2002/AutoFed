@@ -13,7 +13,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('--dataset_path', type=str, default="../../datasets")
     parser.add_argument('--dataset', type=str, choices=["PEMS03", "PEMS04", "PEMS08", "PEMS07"],
-                      default='PEMS03', help='which dataset to run')
+                      default='PEMS07', help='which dataset to run')
     parser.add_argument('--num_nodes', type=int, default=170, help='num_nodes')
     parser.add_argument('--seq_len', type=int, default=12, help='input sequence length')
     parser.add_argument('--horizon', type=int, default=12, help='output sequence length')

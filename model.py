@@ -133,18 +133,13 @@ class GRU_AGCN_TP(nn.Module):
         nn.init.xavier_normal_(self.W)
 
         self.encoder = GRU_AGCN_Encoder(node_num, dim_in, dim_hidden, cheb_k, embed_dim, layer)
-        self.encoder_low = GRU_AGCN_Encoder(node_num, dim_in, dim_hidden, cheb_k, embed_dim, layer)
+        # self.encoder_low = GRU_AGCN_Encoder(node_num, dim_in, dim_hidden, cheb_k, embed_dim, layer)
+        self.encoder_low = self.encoder
 
         self.decoder = GRU_AGCN_Decoder(node_num, horizon, dim_in_dec, dim_out, dim_hidden + dim_hidden, cheb_k, embed_dim, layer)
 
 
     def forward(self, x, x_dec, gt=None):
-        # extract low frequent feature
-        # dwt = DWT1DForward(wave="coif1", J=1, mode="symmetric").to(x.device)
-        # x_low, x_high = dwt(x.permute(0, 3, 2, 1).squeeze())
-        # idwt = DWT1DInverse(wave="coif1", mode="symmetric").to(x.device)
-        # x_low = idwt((x_low, [torch.zeros(x_high[0].shape).to(x.device)])).unsqueeze(1).permute(0, 3, 2, 1)
-        # hidden_state_low = self.encoder_low(x_low, self.W) # batch * node_num * hidden_dim
 
         x_low = x.permute(0, 2, 1, 3) # batch * node * time * dim
         x_low = x_low.reshape(x.shape[0], x.shape[2], -1)
@@ -167,36 +162,3 @@ class GRU_AGCN_TP(nn.Module):
         hidden_state = hidden_state.unsqueeze(1).repeat(1,self.layer,1,1)
         y = self.decoder(x_dec, hidden_state, self.W, gt)
         return y, loss_ae
-
-
-# Example usage
-if __name__ == "__main__":
-    # Example dimensions
-    batch_size = 2
-    node_num = 100
-    input_dim = 16
-    input_decoder_dim = 15
-    hidden_dim = 64
-    output_dim = 3
-    time_length = 12
-    horizon = 10
-
-    x = torch.randn(batch_size, time_length, node_num, input_dim)
-    x_dec = torch.randn(batch_size, horizon, node_num, input_decoder_dim)
-    model = GRU_AGCN(node_num, horizon, input_dim, input_decoder_dim, output_dim, hidden_dim, cheb_k=3, embed_dim=64, layer=2)
-    optim = torch.optim.Adam(model.parameters(), lr=0.001)
-
-    y_hat = model(x,x_dec)
-    y = torch.zeros_like(y_hat)
-    # print(y_hat.shape)
-    #
-    # loss_func = nn.MSELoss()
-    # loss = loss_func(y_hat, y)
-    #
-    # optim.zero_grad()
-    # loss.backward()
-    # optim.step()
-
-    print(y_hat)
-
-
