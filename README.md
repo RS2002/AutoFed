@@ -1,6 +1,6 @@
 # AutoFed
 
-**Article:** Zijian Zhao, Yitong Shang, Sen Li*, "AutoFed: A Personalized Federated Travel Demand Prediction Framework via Adaptive Prefix-AGCRN" (in preparation)
+**Article:** "AutoFed: A Personalized Federated Travel Demand Prediction Framework via Global Representation" (under revision)
 
 
 
@@ -8,4 +8,25 @@
 
 <img src="./img/main.png" style="zoom:50%;" />
 
-<img src="./img/network.png" style="zoom:50%;" />
+
+
+## 2. Dataset
+
+
+
+
+
+## 3. Command
+
+```shell
+python main.py --num_client <client amount (1-10)>
+```
+
+
+
+## 4. Citation
+
+```
+
+```
+
