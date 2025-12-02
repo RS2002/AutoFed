@@ -90,7 +90,6 @@ class Client():
                     loss.backward()
                     torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.max_norm)
                     self.optim.step()
-                    self.scheduler.step()
                 else:
                     y_hat, loss_ae = self.model(x, x_dec)
                     mse, rmse, mae, mape = loss_func(y_hat, y)
@@ -103,6 +102,8 @@ class Client():
                 mape_list.append(mape.item())
                 loss_list.append(loss.item())
 
+            if mode == "train":
+                self.scheduler.step()
         return np.mean(mse_list), np.mean(rmse_list), np.mean(mae_list), np.mean(mape_list), np.mean(loss_list)
 
 
