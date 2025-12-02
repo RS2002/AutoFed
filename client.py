@@ -33,7 +33,7 @@ class Client():
         super().__init__()
 
         self.client_id = client_id
-        self.save_path = f"./{str(args.num_client)}/{client_id}.pth"
+        self.save_path = f"./{str(args.mode)}/{str(args.num_client)}/{client_id}.pth"
         self.max_norm = args.max_grad_norm
 
         self.num_nodes = dataset[0][0].shape[2]
@@ -54,7 +54,7 @@ class Client():
         self.test_loader = DataLoader(test_data, batch_size=args.batch_size, shuffle=True)
 
         self.optim = torch.optim.Adam(self.model.parameters(), lr=args.lr, eps=args.epsilon)
-        # self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optim, gamma=args.gamma)
+        self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optim, gamma=args.gamma)
 
 
     def iteration(self, mode="train", epochs=1):
@@ -90,7 +90,7 @@ class Client():
                     loss.backward()
                     torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.max_norm)
                     self.optim.step()
-                    # self.scheduler.step()
+                    self.scheduler.step()
                 else:
                     y_hat, loss_ae = self.model(x, x_dec)
                     mse, rmse, mae, mape = loss_func(y_hat, y)

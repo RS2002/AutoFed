@@ -136,6 +136,7 @@ class AutoFed(nn.Module):
         # self.encoder_low = self.encoder
         self.decoder = AGCRN_Decoder(node_num, horizon, dim_in_dec, dim_out, dim_hidden + dim_hidden, cheb_k, embed_dim, layer)
 
+        self.act = nn.LeakyReLU(negative_slope=0.01, inplace=True)
 
     def forward(self, x, x_dec, gt=None):
         # AE filter
@@ -146,11 +147,12 @@ class AutoFed(nn.Module):
         x_low = x_low.reshape(x.shape[0], x.shape[2], x.shape[1], x.shape[3])
         x_low = x_low.permute(0, 2, 1, 3) # batch * time * node * dim
 
+        x_low = self.act(x_low)
         loss_ae = torch.mean(torch.abs(x_low-x))
 
         x_low_e = x_low_e.reshape(x.shape[0], x.shape[2], x.shape[1], -1)
         x_low_e = x_low_e.permute(0, 2, 1, 3)
-        hidden_state_low = self.encoder_low(x_low_e.detach(), self.W)  # batch * node_num * hidden_dim
+        hidden_state_low = self.encoder_low(x_low_e, self.W)  # batch * node_num * hidden_dim
 
         # construct pattern
         hidden_state_low = hidden_state_low.reshape(-1,self.dim_hidden)
@@ -162,4 +164,6 @@ class AutoFed(nn.Module):
 
         hidden_state = hidden_state.unsqueeze(1).repeat(1,self.layer,1,1)
         y = self.decoder(x_dec, hidden_state, self.W, gt)
+        y = self.act(y)
+
         return y, loss_ae
