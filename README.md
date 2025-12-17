@@ -14,12 +14,20 @@
 
 
 
+```shell
+python data_split.py
+```
+
+```shell
+python data_process.py
+```
+
 
 
 ## 3. Command
 
 ```shell
-python main.py --num_client <client amount (1-10)>
+python main.py --num_client <client amount (1-10)> --mode <0/1/2>
 ```
 
 

@@ -85,6 +85,7 @@ class Client():
                     y_hat, loss_ae = self.model(x, x_dec, y)
                     mse, rmse, mae, mape = loss_func(y_hat, y)
                     alpha = loss_ae / mae
+                    alpha = alpha.detach()
                     loss = mae + alpha * loss_ae
                     self.optim.zero_grad()
                     loss.backward()
