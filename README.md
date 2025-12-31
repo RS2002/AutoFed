@@ -1,6 +1,6 @@
 # AutoFed
 
-**Article:** "AutoFed: A Personalized Federated Traffic Prediction Framework via Global Representation" (under review)
+**Article:** "AutoFed: Manual-Free Federated Traffic Prediction via Personalized Prompt" (under review)
 
 
 
